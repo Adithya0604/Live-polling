@@ -1,4 +1,6 @@
 import { Server } from "socket.io";
+import dotenv from 'dotenv'
+dotenv.config()
 
 let io;
 export const currentPoll = {
@@ -20,7 +22,7 @@ export function IntilizeSocketAndRoleConnection(server) {
 
   io = new Server(server, {
     cors: {
-      origin: ["http://localhost:5173"],
+      origin: ["https://idyllic-griffin-e4ef89.netlify.app/", process.env.FRONTEND_PRODUCTION_URL,"http://localhost:5173"],
       methods: ["GET", "POST", "PUT", "PATCH"],
       credentials: true,
     },

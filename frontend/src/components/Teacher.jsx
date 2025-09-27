@@ -21,7 +21,7 @@ const Teacher = () => {
 
   // Initialize socket connection
   useEffect(() => {
-    const newSocket = io("http://localhost:8000", {
+    const newSocket = io(`https://live-polling-9y6d.onrender.com`, {
       withCredentials: true,
     });
 
@@ -106,7 +106,7 @@ const Teacher = () => {
     try {
       // Only call the ask question API
       const askResponse = await fetch(
-        "http://localhost:8000/api/teacher/question/ask",
+        `https://live-polling-9y6d.onrender.com/api/teacher/question/ask`,
         {
           method: "POST",
           headers: {

@@ -28,7 +28,7 @@ const Student = () => {
       socket.close(); // Close existing connection if any
     }
 
-    const newSocket = io("http://localhost:8000", {
+    const newSocket = io(`https://live-polling-9y6d.onrender.com`, {
       withCredentials: true,
     });
 

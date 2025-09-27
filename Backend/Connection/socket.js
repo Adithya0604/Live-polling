@@ -1,3 +1,6 @@
+import { Server } from "socket.io";
+
+let io;
 export const currentPoll = {
   question: null,
   options: [],
@@ -10,7 +13,19 @@ export const currentPoll = {
 };
 
 // creating function regarding socket and role connection
-export function IntilizeSocketAndRoleConnection(io) {
+export function IntilizeSocketAndRoleConnection(server) {
+  if (io) {
+    return io;
+  }
+
+  io = new Server(server, {
+    cors: {
+      origin: ["http://localhost:3000", "http://localhost:8080"],
+      methods: ["GET", "POST", "PUT", "PATCH"],
+      credentials: true,
+    },
+  });
+  
   // Connection of Socket
   io.on("connection", (socket) => {
     console.log("Socket Connected", socket.id);
@@ -45,3 +60,9 @@ export function IntilizeSocketAndRoleConnection(io) {
   });
 }
 
+export function getIO() {
+  if (!io) {
+    throw new Error("Socket.io not initialized!");
+  }
+  return io;
+}

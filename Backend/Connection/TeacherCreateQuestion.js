@@ -1,6 +1,6 @@
 import ApiError from "../SendingObject/ApiError.js";
 import ApiResponse from "../SendingObject/ApiResponse.js";
-import {currentPoll} from "./socket.js";
+import { getIO, currentPoll } from "./socket.js";
 
 export default function TeacherCreateQuestion(req, res) {
   const { question, options, correctOptionIndex, timerSeconds } = req.body;
@@ -29,4 +29,59 @@ export default function TeacherCreateQuestion(req, res) {
   } catch (error) {
     return res.status(500).json(new ApiError(500, "", "Server Error"));
   }
+}
+
+export function TeacherAskQuestion(_, res) {
+  const io = getIO();
+  if (!currentPoll.question) {
+    return res.status(400).json({ message: "No question created yet" });
+  }
+
+  io.to("poll-room").emit("question-start", {
+    question: currentPoll.question,
+    options: currentPoll.options,
+    timerSeconds: currentPoll.timerSeconds,
+  });
+
+  let remainingTime = currentPoll.timerSeconds;
+
+  if (currentPoll.timerInterval) clearInterval(currentPoll.timerInterval);
+
+  currentPoll.timerInterval = setInterval(() => {
+    remainingTime--;
+    io.to("poll-room").emit("timer-tick", remainingTime);
+
+    if (remainingTime <= 0) {
+      clearInterval(currentPoll.timerInterval);
+
+      const totalStudents = currentPoll.students.size || 0;
+      const optionCounts = new Array(currentPoll.options.length).fill(0);
+
+      Object.values(currentPoll.answers).forEach((answerIndex) => {
+        optionCounts[answerIndex] = (optionCounts[answerIndex] || 0) + 1;
+      });
+
+      const correctCount = optionCounts[currentPoll.correctOptionIndex] || 0;
+
+      io.to("poll-room").emit("results-update", {
+        optionCounts,
+        correctCount,
+        totalStudents,
+        correctOptionIndex: currentPoll.correctOptionIndex,
+      });
+    }
+  }, 1000);
+
+  const safePoll = {
+    question: currentPoll.question,
+    options: currentPoll.options,
+    timerSeconds: currentPoll.timerSeconds,
+    answers: currentPoll.answers,
+    students: Array.from(currentPoll.students), 
+    pollId: currentPoll.pollId,
+  };
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, safePoll, "Question Created"));
 }

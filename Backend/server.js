@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 import { IntilizeSocketAndRoleConnection } from "./Connection/socket.js";
 import teacherRoute from "./Routes/Teacher.js";
+import studentRoute from "./Routes/Student.js"; 
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ const PORT = process.env.PORT || 8000;
 IntilizeSocketAndRoleConnection(server);
 
 app.use("/api/teacher", teacherRoute);
+app.use("/api/student", studentRoute);
 
 server.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);

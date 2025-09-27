@@ -5,19 +5,25 @@ import dotenv from "dotenv";
 
 import { IntilizeSocketAndRoleConnection } from "./Connection/socket.js";
 import teacherRoute from "./Routes/Teacher.js";
-import studentRoute from "./Routes/Student.js"; 
+import studentRoute from "./Routes/Student.js";
 
 dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors());
-app.use(express.json());
-
 const FrontendURL =
-  process.env.FRONTEND_PRODUCTION_URL || "http://localhost:3000";
+  process.env.FRONTEND_PRODUCTION_URL || "http://localhost:5173";
 const PORT = process.env.PORT || 8000;
+
+app.use(
+  cors({
+    origin: [FrontendURL],
+    methods: ["GET", "POST", "PUT", "PATCH"],
+    credentials: true,
+  })
+);
+app.use(express.json());
 
 IntilizeSocketAndRoleConnection(server);
 

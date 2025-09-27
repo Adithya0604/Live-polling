@@ -20,12 +20,12 @@ export function IntilizeSocketAndRoleConnection(server) {
 
   io = new Server(server, {
     cors: {
-      origin: ["http://localhost:3000", "http://localhost:8080"],
+      origin: ["http://localhost:5173"],
       methods: ["GET", "POST", "PUT", "PATCH"],
       credentials: true,
     },
   });
-  
+
   // Connection of Socket
   io.on("connection", (socket) => {
     console.log("Socket Connected", socket.id);
@@ -46,6 +46,19 @@ export function IntilizeSocketAndRoleConnection(server) {
       }
       socket.join("poll-room");
       socket.emit("join-emit", { message: `Student ${name} joined poll room` });
+    });
+
+    socket.on("submit-answer", ({ studentName, selectedOption }) => {
+      if (
+        studentName &&
+        typeof selectedOption === "number" &&
+        currentPoll.students.has(studentName)
+      ) {
+        currentPoll.answers[studentName] = selectedOption;
+        console.log(
+          `Answer recorded: ${studentName} chose option ${selectedOption}`
+        );
+      }
     });
 
     // Disconnection of socket if student is deleted

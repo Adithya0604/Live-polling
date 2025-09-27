@@ -31,8 +31,27 @@ export default function TeacherCreateQuestion(req, res) {
   }
 }
 
-export function TeacherAskQuestion(_, res) {
+export function TeacherAskQuestion(req, res) {
   const io = getIO();
+  const { question, options, correctOptionIndex, timerSeconds } = req.body;
+
+  if (
+    !question ||
+    !options ||
+    correctOptionIndex === undefined ||
+    !timerSeconds
+  ) {
+    return res
+      .status(400)
+      .json(new ApiError(400, "", "All Fields are Required"));
+  }
+
+  currentPoll.question = question;
+  currentPoll.options = options;
+  currentPoll.correctOptionIndex = correctOptionIndex;
+  currentPoll.timerSeconds = timerSeconds;
+  currentPoll.answers = {};
+
   if (!currentPoll.question) {
     return res.status(400).json({ message: "No question created yet" });
   }
@@ -63,12 +82,19 @@ export function TeacherAskQuestion(_, res) {
 
       const correctCount = optionCounts[currentPoll.correctOptionIndex] || 0;
 
+      // Calculate percentages (same formula as API 2)
+      const optionPercentages = optionCounts.map((count) =>
+        totalStudents > 0 ? ((count / totalStudents) * 100).toFixed(2) : "0.00"
+      );
+
       io.to("poll-room").emit("results-update", {
         optionCounts,
+        optionPercentages, // Add percentages here
         correctCount,
         totalStudents,
         correctOptionIndex: currentPoll.correctOptionIndex,
       });
+
     }
   }, 1000);
 
@@ -77,7 +103,7 @@ export function TeacherAskQuestion(_, res) {
     options: currentPoll.options,
     timerSeconds: currentPoll.timerSeconds,
     answers: currentPoll.answers,
-    students: Array.from(currentPoll.students), 
+    students: Array.from(currentPoll.students),
     pollId: currentPoll.pollId,
   };
 

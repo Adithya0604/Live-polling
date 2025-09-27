@@ -1,0 +1,145 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  background-color: #f5f5f5;
+}
+
+.dashboard-root {
+  background: #f5f5f5;
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  margin: 0;
+  position: relative;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.poll-label {
+  color: #fff;
+  background: linear-gradient(90deg, #7565D9 0%, #4F0DCE 100%);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard-root h1 {
+  font-size: 48px;
+  font-weight: 400;
+  color: #373737;
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.bold {
+  font-weight: 700;
+  color: #373737;
+}
+
+.subtitle {
+  color: #999999;
+  margin-bottom: 50px;
+  font-size: 16px;
+  text-align: center;
+  max-width: 500px;
+  line-height: 1.4;
+}
+
+.roles {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 50px;
+  align-items: stretch;
+}
+
+.role-card {
+  background: #fff;
+  border: 2px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 32px 24px;
+  cursor: pointer;
+  width: 280px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.role-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.role-card.selected {
+  border: 2px solid #7765DA;
+  box-shadow: 0 4px 20px rgba(119, 101, 218, 0.15);
+}
+
+.role-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #373737;
+  margin-bottom: 12px;
+}
+
+.role-desc {
+  color: #666666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.continue-btn {
+  background: linear-gradient(90deg, #8F64E1 0%, #1D68BD 100%);;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 48px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(119, 101, 218, 0.25);
+}
+
+.continue-btn:hover:not(:disabled) {
+  background: #6654c4;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(119, 101, 218, 0.35);
+}
+
+.continue-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .dashboard-root h1 {
+    font-size: 36px;
+  }
+  
+  .roles {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .role-card {
+    width: 100%;
+    max-width: 350px;
+  }
+}

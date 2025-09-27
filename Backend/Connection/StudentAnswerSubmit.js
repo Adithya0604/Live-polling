@@ -2,6 +2,35 @@ import { currentPoll } from "./socket.js";
 import ApiError from "../SendingObject/ApiError.js";
 import ApiResponse from "../SendingObject/ApiResponse.js";
 
+export function StudentJoinPoll(req, res) {
+   const { name } = req.body;
+  try {
+    if (!name || typeof name !== "string" || name.trim() === "") {
+      return res.status(400).json({success:false, message:"Student name is required and must be valid"});
+    }
+
+
+    if (!currentPoll.students) {
+      currentPoll.students = new Set();
+    }
+
+
+    if (currentPoll.students.has(name)) {
+      return res.status(409).json({success:false, message:"Student name already exists"});
+    }
+
+
+    currentPoll.students.add(name);
+
+
+    return res.status(200).json({success:true, message:"Student added to poll successfully"});
+  } catch (error) {
+    console.error("Error in StudentJoinPoll:", error);
+    return res.status(500).json({success:false, message:"Internal Server Error"});
+  }
+}
+
+
 export default function StudentSubmitAnswer(req, res) {
   const { name, selectedOptionIndex } = req.body;
 
@@ -23,6 +52,8 @@ export default function StudentSubmitAnswer(req, res) {
     currentPoll.answers[name] = selectedOptionIndex;
     currentPoll.students.add(name);
 
+    console.log("we have to do this ",req.body)
+    
     return res.status(200).json(new ApiResponse(200, null, "Answer submitted successfully"));
   } catch (error) {
     console.error("Error in StudentSubmitAnswer:", error);
